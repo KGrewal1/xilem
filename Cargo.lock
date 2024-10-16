@@ -20,13 +20,13 @@ checksum = "c71b1793ee61086797f5c80b6efa2b8ffa6d5dd703f118545808a7f2e27f7046"
 
 [[package]]
 name = "accesskit"
-version = "0.16.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+version = "0.16.1"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 
 [[package]]
 name = "accesskit_android"
 version = "0.1.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 dependencies = [
  "accesskit",
  "accesskit_consumer",
@@ -38,8 +38,8 @@ dependencies = [
 
 [[package]]
 name = "accesskit_atspi_common"
-version = "0.9.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+version = "0.9.1"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 dependencies = [
  "accesskit",
  "accesskit_consumer",
@@ -51,8 +51,8 @@ dependencies = [
 
 [[package]]
 name = "accesskit_consumer"
-version = "0.24.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+version = "0.24.1"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 dependencies = [
  "accesskit",
  "immutable-chunkmap",
@@ -60,8 +60,8 @@ dependencies = [
 
 [[package]]
 name = "accesskit_macos"
-version = "0.17.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+version = "0.17.1"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 dependencies = [
  "accesskit",
  "accesskit_consumer",
@@ -73,8 +73,8 @@ dependencies = [
 
 [[package]]
 name = "accesskit_unix"
-version = "0.12.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+version = "0.12.1"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 dependencies = [
  "accesskit",
  "accesskit_atspi_common",
@@ -90,20 +90,21 @@ dependencies = [
 
 [[package]]
 name = "accesskit_windows"
-version = "0.22.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+version = "0.23.0"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 dependencies = [
  "accesskit",
  "accesskit_consumer",
  "paste",
  "static_assertions",
- "windows 0.54.0",
+ "windows 0.58.0",
+ "windows-core 0.58.0",
 ]
 
 [[package]]
 name = "accesskit_winit"
-version = "0.22.0"
-source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#f35b5e4bcb2bc014a540987b8b3f88c6121174d2"
+version = "0.22.1"
+source = "git+https://github.com/AccessKit/accesskit.git?branch=android-basics#6e30f9bd250c8e4f13586550be63291104c19011"
 dependencies = [
  "accesskit",
  "accesskit_android",
@@ -871,7 +872,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b28bfe653d79bd16c77f659305b195b82bb5ce0c0eb2a4846b82ddbd77586813"
 dependencies = [
  "bitflags 2.6.0",
- "libloading 0.7.4",
+ "libloading 0.8.5",
  "winapi",
 ]
 
@@ -928,7 +929,7 @@ version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "330c60081dcc4c72131f8eb70510f1ac07223e5d4163db481a04a0befcffa412"
 dependencies = [
- "libloading 0.7.4",
+ "libloading 0.8.5",
 ]
 
 [[package]]
@@ -1544,7 +1545,7 @@ dependencies = [
  "bitflags 2.6.0",
  "com",
  "libc",
- "libloading 0.7.4",
+ "libloading 0.8.5",
  "thiserror",
  "widestring",
  "winapi",
@@ -4297,7 +4298,7 @@ dependencies = [
  "js-sys",
  "khronos-egl",
  "libc",
- "libloading 0.7.4",
+ "libloading 0.8.5",
  "log",
  "metal",
  "naga",
@@ -4369,7 +4370,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -4385,18 +4386,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e48a53791691ab099e5e2ad123536d0fff50652600abaf43bbf952894110d0be"
 dependencies = [
  "windows-core 0.52.0",
- "windows-targets 0.52.6",
-]
-
-[[package]]
-name = "windows"
-version = "0.54.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9252e5725dbed82865af151df558e754e4a3c2c30818359eb17465f1346a1b49"
-dependencies = [
- "windows-core 0.54.0",
- "windows-implement 0.53.0",
- "windows-interface 0.53.0",
  "windows-targets 0.52.6",
 ]
 
@@ -4421,36 +4410,15 @@ dependencies = [
 
 [[package]]
 name = "windows-core"
-version = "0.54.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12661b9c89351d684a50a8a643ce5f608e20243b9fb84687800163429f161d65"
-dependencies = [
- "windows-result 0.1.2",
- "windows-targets 0.52.6",
-]
-
-[[package]]
-name = "windows-core"
 version = "0.58.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ba6d44ec8c2591c134257ce647b7ea6b20335bf6379a27dac5f1641fcf59f99"
 dependencies = [
- "windows-implement 0.58.0",
- "windows-interface 0.58.0",
- "windows-result 0.2.0",
+ "windows-implement",
+ "windows-interface",
+ "windows-result",
  "windows-strings",
  "windows-targets 0.52.6",
-]
-
-[[package]]
-name = "windows-implement"
-version = "0.53.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "942ac266be9249c84ca862f0a164a39533dc2f6f33dc98ec89c8da99b82ea0bd"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.72",
 ]
 
 [[package]]
@@ -4458,17 +4426,6 @@ name = "windows-implement"
 version = "0.58.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2bbd5b46c938e506ecbce286b6628a02171d56153ba733b6c741fc627ec9579b"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.72",
-]
-
-[[package]]
-name = "windows-interface"
-version = "0.53.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da33557140a288fae4e1d5f8873aaf9eb6613a9cf82c3e070223ff177f598b60"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4492,17 +4449,8 @@ version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e400001bb720a623c1c69032f8e3e4cf09984deec740f007dd2b03ec864804b0"
 dependencies = [
- "windows-result 0.2.0",
+ "windows-result",
  "windows-strings",
- "windows-targets 0.52.6",
-]
-
-[[package]]
-name = "windows-result"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e383302e8ec8515204254685643de10811af0ed97ea37210dc26fb0032647f8"
-dependencies = [
  "windows-targets 0.52.6",
 ]
 
@@ -4521,7 +4469,7 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4cd9b125c486025df0eabcb585e62173c6c9eddcec5d117d3b6e8c30e2ee4d10"
 dependencies = [
- "windows-result 0.2.0",
+ "windows-result",
  "windows-targets 0.52.6",
 ]
 
