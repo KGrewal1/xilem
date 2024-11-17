@@ -51,7 +51,7 @@ pub struct TreeArena<T> {
 ///
 /// When you borrow an item from a [`TreeArena`], it returns an [`ArenaRef`].
 /// You can access it children to get access to child [`ArenaRef`] handles.
-#[derive(Clone, Copy)]
+
 pub struct ArenaRef<'arena, T> {
     /// Parent of the Node
     pub parent_id: Option<NodeId>,
@@ -64,7 +64,6 @@ pub struct ArenaRef<'arena, T> {
 /// A handle giving shared access to an arena item's children.
 ///
 /// See [`ArenaRef`] for more information.
-#[derive(Clone, Copy)]
 pub struct ArenaRefChildren<'arena, T> {
     /// The associated data arena
     parent_arena: &'arena DataMap<T>,
@@ -75,6 +74,20 @@ pub struct ArenaRefChildren<'arena, T> {
     child_arr: &'arena [NodeId],
 }
 
+impl<Item> Clone for ArenaRef<'_, Item> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+impl<Item> Copy for ArenaRef<'_, Item> {}
+
+impl<T> Clone for ArenaRefChildren<'_, T> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+impl<Item> Copy for ArenaRefChildren<'_, Item> {}
 /// A reference type giving mutable access to an arena item and its children.
 ///
 /// When you borrow an item from a [`TreeArena`], it returns an `ArenaMut`.
