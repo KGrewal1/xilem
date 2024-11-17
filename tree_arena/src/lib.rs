@@ -122,6 +122,11 @@ impl<T> DataMap<T> {
     ///
     /// Time Complexity O(1)
     fn find(&self, id: impl Into<NodeId>) -> Option<ArenaRef<'_, T>> {
+        // SAFETY
+        // We need there to be no mutable access to the node
+        // Mutable access to the node would imply there is some &mut self
+        // As we are taking &self, there can be no mutable access to the node
+        // Thus this is safe
         let id: NodeId = id.into();
         let parent_id = *self.parents.get(&id)?;
         self.items
@@ -151,7 +156,13 @@ impl<T> DataMap<T> {
     /// Returns a mutable reference to the item if present.
     ///
     /// Time Complexity O(1)
-    fn find_mut(&mut self, id: impl Into<NodeId>) -> Option<ArenaMut<'_, T>> {
+    ///
+    /// # SAFETY
+    ///
+    /// When using this on [`ArenaMutChildren`] associated with some node,
+    /// must ensure that `id` is a descendant of that node, otherwise can
+    /// obtain two mutable references to the same node
+    unsafe fn find_mut(&mut self, id: impl Into<NodeId>) -> Option<ArenaMut<'_, T>> {
         let id: NodeId = id.into();
         let parent_id = *self.parents.get(&id)?;
         self.items
@@ -257,7 +268,8 @@ impl<T> TreeArena<T> {
     ///
     /// Returns a mutable reference to the item if present.
     pub fn find_mut(&mut self, id: impl Into<NodeId>) -> Option<ArenaMut<'_, T>> {
-        self.data_map.find_mut(id)
+        // safe as derived from the arena itself and has assoc lifetime with the arena
+        unsafe { self.data_map.find_mut(id) }
     }
 
     /// Construct the path of items from the given item to the root of the tree.
@@ -426,7 +438,8 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
     pub fn get_child_mut(&mut self, id: impl Into<NodeId>) -> Option<ArenaMut<'_, T>> {
         let id = id.into();
         if self.has_child(id) {
-            self.parent_arena.find_mut(id)
+            // safe as we check the node is a direct child node
+            unsafe { self.parent_arena.find_mut(id) }
         } else {
             None
         }
@@ -452,7 +465,8 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
     pub fn into_child_mut(self, id: impl Into<NodeId>) -> Option<ArenaMut<'arena, T>> {
         let id = id.into();
         if self.has_child(id) {
-            self.parent_arena.find_mut(id)
+            // safe as we check the node is a direct child node
+            unsafe { self.parent_arena.find_mut(id) }
         } else {
             None
         }
@@ -562,7 +576,8 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
     pub fn find_mut(self, id: impl Into<NodeId>) -> Option<ArenaMut<'arena, T>> {
         let id = id.into();
         if self.is_descendant(id) {
-            self.parent_arena.find_mut(id)
+            // safe as we check the node is a descendant
+            unsafe { self.parent_arena.find_mut(id) }
         } else {
             None
         }
@@ -589,8 +604,7 @@ mod tests {
         child_3.children.insert_child(4_u64, 'd');
 
         let child_2 = tree.find(2_u64).expect("No child 2 found");
-        let child_3 = child_2.children.find(4_u64);
-        println!("{:?}", child_3.map(|x| x.item));
-        panic!("Explicit")
+        let child_4 = child_2.children.find(4_u64);
+        println!("{:?}", child_4.map(|x| x.item));
     }
 }
