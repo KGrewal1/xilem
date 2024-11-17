@@ -217,6 +217,7 @@ impl<T> DataMap<T> {
         }
 
         let mut current_id = Some(id);
+        #[expect(clippy::shadow_unrelated, reason = "Deliberate Shadow of original id")]
         while let Some(id) = current_id {
             path.push(id);
             current_id = *self.parents.get(&id).unwrap();
@@ -258,7 +259,7 @@ impl<T> TreeArena<T> {
     /// Using [`insert_child`](ArenaMutChildren::insert_child) on this handle
     /// will add a new root to the tree.
     pub fn root_token_mut(&mut self) -> ArenaMutChildren<'_, T> {
-        let TreeArena { data_map, roots } = self;
+        let Self { data_map, roots } = self;
         ArenaMutChildren {
             parent_arena: data_map,
             id: None,
@@ -304,8 +305,11 @@ impl<T> Default for TreeArena<T> {
 
 impl<T> ArenaRef<'_, T> {
     /// Id of the item this handle is associated with.
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "ArenaRefChildren always has an id when it's a member of ArenaRef"
+    )]
     pub fn id(&self) -> NodeId {
-        // ArenaRefChildren always has an id when it's a member of ArenaRef
         self.children.id.unwrap()
     }
 }
@@ -315,18 +319,11 @@ impl<'arena, T> ArenaRefChildren<'arena, T> {
     /// O(depth) and the limiting factor for find methods
     /// not from the root
     fn is_descendant(&self, id: NodeId) -> bool {
-        // the id to search for
-        let id: NodeId = id.into();
-
         // the id of the parent
         let parent_id = self.id;
 
         // if the path is empty, there is no path from id to self
-        if self.parent_arena.get_id_path(id, parent_id).is_empty() {
-            false
-        } else {
-            true
-        }
+        !self.parent_arena.get_id_path(id, parent_id).is_empty()
     }
 
     /// returns true if there is a child with the given id
@@ -386,8 +383,11 @@ impl<'arena, T> ArenaRefChildren<'arena, T> {
 
 impl<T> ArenaMut<'_, T> {
     /// Id of the item this handle is associated with
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "ArenaMutChildren always has an id when it's a member of ArenaMut"
+    )]
     pub fn id(&self) -> NodeId {
-        // ArenaMutChildren always has an id when it's a member of ArenaMut
         self.children.id.unwrap()
     }
 
@@ -530,8 +530,8 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
         if self.has_child(child_id) {
             fn remove_children<T>(id: NodeId, data_map: &mut DataMap<T>) -> T {
                 let node = data_map.items.remove(&id).unwrap().into_inner();
-                for id in node.children {
-                    remove_children(id, data_map);
+                for child_id in node.children {
+                    remove_children(child_id, data_map);
                 }
                 data_map.parents.remove(&id);
                 node.item
@@ -546,9 +546,9 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
     /// Returns a shared handle equivalent to this one.
     pub fn reborrow(&self) -> ArenaRefChildren<'_, T> {
         ArenaRefChildren {
-            parent_arena: &self.parent_arena,
+            parent_arena: self.parent_arena,
             id: self.id,
-            child_arr: &self.child_arr,
+            child_arr: self.child_arr,
         }
     }
 
@@ -559,7 +559,7 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
         ArenaMutChildren {
             parent_arena: self.parent_arena,
             id: self.id,
-            child_arr: &mut self.child_arr,
+            child_arr: self.child_arr,
         }
     }
 
