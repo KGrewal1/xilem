@@ -29,7 +29,7 @@ struct TreeNode<T> {
 /// Mapping of data for the Tree Arena
 struct DataMap<T> {
     /// The items in the tree
-    items: HashMap<NodeId, UnsafeCell<TreeNode<T>>>,
+    items: HashMap<NodeId, Box<UnsafeCell<TreeNode<T>>>>,
     /// The parent of each node, or None if it is the root
     parents: HashMap<NodeId, Option<NodeId>>,
 }
@@ -513,7 +513,7 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
 
         self.parent_arena
             .items
-            .insert(child_id, UnsafeCell::new(node));
+            .insert(child_id, Box::new(UnsafeCell::new(node)));
     }
 
     // TODO - How to handle when a subtree is removed?
@@ -530,7 +530,7 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
         if self.has_child(child_id) {
             fn remove_children<T>(id: NodeId, data_map: &mut DataMap<T>) -> T {
                 let node = data_map.items.remove(&id).unwrap().into_inner();
-                for child_id in node.children {
+                for child_id in node.children.into_iter() {
                     remove_children(child_id, data_map);
                 }
                 data_map.parents.remove(&id);
