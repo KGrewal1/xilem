@@ -123,6 +123,7 @@ impl<T> DataMap<T> {
     /// Time Complexity O(1)
     fn find(&self, id: impl Into<NodeId>) -> Option<ArenaRef<'_, T>> {
         let id: NodeId = id.into();
+        let parent_id = *self.parents.get(&id)?;
         self.items
             .get(&id)
             .and_then(|item| unsafe { item.get().as_ref() })
@@ -131,7 +132,6 @@ impl<T> DataMap<T> {
                      item,
                      children: child_arr,
                  }| {
-                    let parent_id = self.parents.get(&id).and_then(|x| *x);
                     let children = ArenaRefChildren {
                         parent_arena: self,
                         id: Some(id),
@@ -153,6 +153,7 @@ impl<T> DataMap<T> {
     /// Time Complexity O(1)
     fn find_mut(&mut self, id: impl Into<NodeId>) -> Option<ArenaMut<'_, T>> {
         let id: NodeId = id.into();
+        let parent_id = *self.parents.get(&id)?;
         self.items
             .get(&id)
             .and_then(|item| unsafe { item.get().as_mut() })
@@ -161,7 +162,6 @@ impl<T> DataMap<T> {
                      item,
                      children: child_arr,
                  }| {
-                    let parent_id = self.parents.get(&id).and_then(|x| *x);
                     let children = ArenaMutChildren {
                         parent_arena: self,
                         id: Some(id),
