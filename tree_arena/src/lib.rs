@@ -11,13 +11,17 @@
 //! will use an arena and unsafe code, but should have the exact same exported API as
 //! this module.
 
+type NodeId = u64;
+
 #[cfg(not(feature = "safe_tree"))]
 mod tree_arena_unsafe;
 #[cfg(not(feature = "safe_tree"))]
 pub use tree_arena_unsafe::*;
 
+#[cfg(feature = "safe_tree")]
 mod tree_arena_safe;
-
+#[cfg(feature = "safe_tree")]
+pub use tree_arena_safe::*;
 #[cfg(test)]
 mod tests {
     use super::*;

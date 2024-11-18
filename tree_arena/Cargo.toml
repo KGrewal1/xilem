@@ -13,7 +13,7 @@ homepage.workspace = true
 [dependencies]
 
 [features]
-default = []
+default = ["safe_tree"]
 safe_tree = []
 
 [lints]
