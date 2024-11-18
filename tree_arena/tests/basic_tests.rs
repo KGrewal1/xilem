@@ -59,3 +59,22 @@ fn arena_tree_duplicate_insertion() {
     roots.insert_child(1_u64, 'a');
     roots.insert_child(1_u64, 'b');
 }
+
+#[test]
+fn parent_child_items() {
+    let mut tree: TreeArena<char> = TreeArena::new();
+    let mut roots = tree.root_token_mut();
+    roots.insert_child(1_u64, 'a');
+    let mut node_1 = roots.get_child_mut(1_u64).expect("No child 1 found");
+    node_1.children.insert_child(2_u64, 'b');
+    let node_1_item = node_1.item;
+    let node_2_item = node_1
+        .children
+        .get_child_mut(2_u64)
+        .expect("No child 2 found")
+        .item;
+    *node_1_item = 'c';
+    *node_2_item = 'd';
+    assert_eq!(*node_1_item, 'c', "Node 1 item should be 'c'");
+    assert_eq!(*node_2_item, 'd', "Node 2 item should be 'd'");
+}
