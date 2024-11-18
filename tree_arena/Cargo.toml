@@ -12,5 +12,9 @@ homepage.workspace = true
 
 [dependencies]
 
+[features]
+default = []
+safe_tree = []
+
 [lints]
 workspace = true
