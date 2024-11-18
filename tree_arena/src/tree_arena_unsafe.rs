@@ -19,6 +19,8 @@ struct DataMap<T> {
     items: HashMap<NodeId, Box<UnsafeCell<TreeNode<T>>>>,
     /// The parent of each node, or None if it is the root
     parents: HashMap<NodeId, Option<NodeId>>,
+    /// The roots of the tree
+    roots: UnsafeCell<Vec<NodeId>>,
 }
 
 /// A container type for a tree of items.
@@ -30,8 +32,6 @@ struct DataMap<T> {
 pub struct TreeArena<T> {
     /// The items in the tree
     data_map: DataMap<T>,
-    /// The roots of the tree
-    roots: Vec<NodeId>,
 }
 
 /// A reference type giving shared access to an arena item and its children.
@@ -119,6 +119,7 @@ impl<T> DataMap<T> {
         Self {
             items: HashMap::new(),
             parents: HashMap::new(),
+            roots: UnsafeCell::new(Vec::new()),
         }
     }
 
@@ -234,16 +235,17 @@ impl<T> TreeArena<T> {
     pub fn new() -> Self {
         Self {
             data_map: DataMap::new(),
-            roots: Vec::new(),
         }
     }
 
     /// Returns a handle whose children are the roots, if any, of the tree.
     pub fn root_token(&self) -> ArenaRefChildren<'_, T> {
+        // safe as the roots are derived from the arena itself (same as safety for find for non root nodes)
+        let roots = unsafe { self.data_map.roots.get().as_ref().unwrap() };
         ArenaRefChildren {
             parent_arena: &self.data_map,
             id: None,
-            child_arr: &self.roots,
+            child_arr: roots,
         }
     }
 
@@ -252,9 +254,10 @@ impl<T> TreeArena<T> {
     /// Using [`insert_child`](ArenaMutChildren::insert_child) on this handle
     /// will add a new root to the tree.
     pub fn root_token_mut(&mut self) -> ArenaMutChildren<'_, T> {
-        let Self { data_map, roots } = self;
+        // safe as the roots are derived from the arena itself (same as safety for find for non root nodes)
+        let roots = unsafe { self.data_map.roots.get().as_mut().unwrap() };
         ArenaMutChildren {
-            parent_arena: data_map,
+            parent_arena: &mut self.data_map,
             id: None,
             child_arr: roots,
         }
