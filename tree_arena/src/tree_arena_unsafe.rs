@@ -1,3 +1,6 @@
+// Copyright 2024 the Xilem Authors
+// SPDX-License-Identifier: Apache-2.0
+
 #![expect(missing_debug_implementations, reason = "Deferred: Noisy")]
 #![allow(unsafe_code, reason = "Purpose is unsafe abstraction")]
 use super::NodeId;
