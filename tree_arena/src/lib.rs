@@ -644,17 +644,18 @@ mod tests {
             .expect("No child 3 found");
         child_3.children.insert_child(4_u64, 'd');
 
-        let child_3 = child_1
+        let child_3_removed = child_1
             .children
             .remove_child(3_u64)
             .expect("No child 3 found");
-        assert_eq!(child_3, 'c', "Expect removal of node 3");
-        let child_3 = child_1.children.remove_child(3_u64);
-        assert!(child_3.is_none(), "Child 3 was not removed");
+        assert_eq!(child_3_removed, 'c', "Expect removal of node 3");
+
+        let no_child_3_removed = child_1.children.remove_child(3_u64);
+        assert!(no_child_3_removed.is_none(), "Child 3 was not removed");
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "Key already present")]
     fn arena_tree_duplicate_insertion() {
         let mut tree: TreeArena<char> = TreeArena::new();
         let mut roots = tree.root_token_mut();
