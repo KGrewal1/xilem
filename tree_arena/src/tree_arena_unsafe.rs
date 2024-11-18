@@ -20,7 +20,7 @@ struct DataMap<T> {
     /// The parent of each node, or None if it is the root
     parents: HashMap<NodeId, Option<NodeId>>,
     /// The roots of the tree
-    roots: UnsafeCell<Vec<NodeId>>,
+    roots: Box<UnsafeCell<Vec<NodeId>>>,
 }
 
 /// A container type for a tree of items.
@@ -118,7 +118,7 @@ impl<T> DataMap<T> {
         Self {
             items: HashMap::new(),
             parents: HashMap::new(),
-            roots: UnsafeCell::new(Vec::new()),
+            roots: Box::new(UnsafeCell::new(Vec::new())),
         }
     }
 
