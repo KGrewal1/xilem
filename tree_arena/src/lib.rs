@@ -229,7 +229,7 @@ impl<T> DataMap<T> {
         // current_id was the last parent node
         // as such if current id is not start_id
         // we have gone to the root and we empty the vec
-        if current_id == start_id {
+        if current_id != start_id {
             path.clear();
         }
         path
@@ -321,6 +321,11 @@ impl<'arena, T> ArenaRefChildren<'arena, T> {
     fn is_descendant(&self, id: NodeId) -> bool {
         // the id of the parent
         let parent_id = self.id;
+
+        // The arena is derived from the root, and the id is in the tree
+        if parent_id.is_none() && self.parent_arena.items.contains_key(&id) {
+            return true;
+        }
 
         // if the path is empty, there is no path from id to self
         !self.parent_arena.get_id_path(id, parent_id).is_empty()
@@ -618,6 +623,42 @@ mod tests {
 
         let child_2 = tree.find(2_u64).expect("No child 2 found");
         let child_4 = child_2.children.find(4_u64);
-        println!("{:?}", child_4.map(|x| x.item));
+        assert!(
+            child_4.is_none(),
+            "Child 4 should not be descended from Child 2"
+        );
+    }
+
+    #[test]
+    fn arena_tree_removal_test() {
+        let mut tree: TreeArena<char> = TreeArena::new();
+        let mut roots = tree.root_token_mut();
+        roots.insert_child(1_u64, 'a');
+        roots.insert_child(2_u64, 'b');
+        let mut child_1 = roots.get_child_mut(1_u64).expect("No child 1 found");
+        child_1.children.insert_child(3_u64, 'c');
+
+        let mut child_3 = child_1
+            .children
+            .get_child_mut(3_u64)
+            .expect("No child 3 found");
+        child_3.children.insert_child(4_u64, 'd');
+
+        let child_3 = child_1
+            .children
+            .remove_child(3_u64)
+            .expect("No child 3 found");
+        assert_eq!(child_3, 'c', "Expect removal of node 3");
+        let child_3 = child_1.children.remove_child(3_u64);
+        assert!(child_3.is_none(), "Child 3 was not removed");
+    }
+
+    #[test]
+    #[should_panic]
+    fn arena_tree_duplicate_insertion() {
+        let mut tree: TreeArena<char> = TreeArena::new();
+        let mut roots = tree.root_token_mut();
+        roots.insert_child(1_u64, 'a');
+        roots.insert_child(1_u64, 'b');
     }
 }
