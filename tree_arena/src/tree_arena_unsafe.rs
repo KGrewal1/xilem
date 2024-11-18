@@ -238,6 +238,10 @@ impl<T> TreeArena<T> {
     }
 
     /// Returns a handle whose children are the roots, if any, of the tree.
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "roots should not point at a null value"
+    )]
     pub fn root_token(&self) -> ArenaRefChildren<'_, T> {
         // safe as the roots are derived from the arena itself (same as safety for find for non root nodes)
         let roots = unsafe { self.data_map.roots.get().as_ref().unwrap() };
@@ -252,6 +256,10 @@ impl<T> TreeArena<T> {
     ///
     /// Using [`insert_child`](ArenaMutChildren::insert_child) on this handle
     /// will add a new root to the tree.
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "roots should not point at a null value"
+    )]
     pub fn root_token_mut(&mut self) -> ArenaMutChildren<'_, T> {
         // safe as the roots are derived from the arena itself (same as safety for find for non root nodes)
         let roots = unsafe { self.data_map.roots.get().as_mut().unwrap() };
