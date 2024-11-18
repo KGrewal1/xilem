@@ -112,6 +112,12 @@ pub struct ArenaMut<'arena, T> {
 /// A handle giving mutable access to an arena item's children.
 ///
 /// See [`ArenaMut`] for more information.
+///
+/// This stores all the permissions for what nodes can be accessed from the current node
+/// As such if a [`std::mem::swap`] is used to swap the children of two trees,
+/// each tree will still have the correct permissions, though roots may be incorrect,
+/// this is allowable, as every non root node has less permissions, and roots arr is not used
+/// to establish permissions at all
 pub struct ArenaMutChildren<'arena, T> {
     /// The associated data arena
     parent_arena: &'arena mut DataMap<T>,
