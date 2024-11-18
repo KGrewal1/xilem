@@ -1,10 +1,8 @@
 #![expect(missing_debug_implementations, reason = "Deferred: Noisy")]
 #![allow(unsafe_code, reason = "Purpose is unsafe abstraction")]
+use super::NodeId;
+
 use std::cell::UnsafeCell;
-// use std::num::NonZeroU64;
-
-type NodeId = u64;
-
 use std::collections::HashMap;
 
 struct TreeNode<T> {
