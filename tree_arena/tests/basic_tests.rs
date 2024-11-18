@@ -78,3 +78,46 @@ fn parent_child_items() {
     assert_eq!(*node_1_item, 'c', "Node 1 item should be 'c'");
     assert_eq!(*node_2_item, 'd', "Node 2 item should be 'd'");
 }
+
+#[test]
+fn mem_swap() {
+    let mut tree: TreeArena<char> = TreeArena::new();
+    let mut roots = tree.root_token_mut();
+    roots.insert_child(1_u64, 'a');
+    let mut node_1 = roots.get_child_mut(1_u64).expect("No child 1 found");
+    node_1.children.insert_child(2_u64, 'b');
+    let node_1_item = node_1.item;
+    let node_2 = node_1
+        .children
+        .get_child_mut(2_u64)
+        .expect("No child 2 found");
+    let node_2_item = node_2.item;
+    *node_1_item = 'c';
+    *node_2_item = 'd';
+    drop(node_2.children);
+    assert_eq!(*node_1_item, 'c', "Node 1 item should be 'c'");
+    assert_eq!(*node_2_item, 'd', "Node 2 item should be 'd'");
+}
+
+// #[test]
+// fn mem_swap() {
+//     let mut tree_a: TreeArena<char> = TreeArena::new();
+//     let mut roots_a = tree_a.root_token_mut();
+//     roots_a.insert_child(1_u64, 'a');
+//     let mut node_1a = roots_a.get_child_mut(1_u64).expect("No child 1 found");
+//     node_1a.children.insert_child(2_u64, 'b');
+//     let node_1a_item = node_1a.item;
+
+//     let mut tree_b: TreeArena<char> = TreeArena::new();
+//     let mut roots_b = tree_b.root_token_mut();
+//     roots_b.insert_child(1_u64, 'c');
+//     let mut node_1b = roots_b.get_child_mut(1_u64).expect("No child 1 found");
+//     node_1b.children.insert_child(2_u64, 'd');
+//     let node_1b_item = node_1b.item;
+
+//     std::mem::swap(&mut node_1a.children, &mut node_1b.children);
+
+//     let node_1b_swapped = tree_b.find(1_u64).expect("No child 1 found");
+
+//     let c = node_1a_item;
+// }
