@@ -122,7 +122,7 @@ impl<T> Copy for ArenaRefChildren<'_, T> {}
 impl<T> TreeArena<T> {
     /// Create an empty tree.
     pub fn new() -> Self {
-        TreeArena {
+        Self {
             roots: Vec::new(),
             parents_map: HashMap::new(),
         }
@@ -225,16 +225,22 @@ impl<T> TreeNode<T> {
 
 impl<T> ArenaRef<'_, T> {
     /// Id of the item this handle is associated with.
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "ArenaRefChildren always has an id when it's a member of ArenaRef"
+    )]
     pub fn id(&self) -> NodeId {
-        // ArenaRefChildren always has an id when it's a member of ArenaRef
         self.children.id.unwrap()
     }
 }
 
 impl<T> ArenaMut<'_, T> {
     /// Id of the item this handle is associated with.
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "ArenaRefChildren always has an id when it's a member of ArenaRef"
+    )]
     pub fn id(&self) -> NodeId {
-        // ArenaMutChildren always has an id when it's a member of ArenaMut
         self.children.id.unwrap()
     }
 
@@ -312,9 +318,12 @@ impl<'arena, T> ArenaRefChildren<'arena, T> {
 
         let mut id_path = id_path.as_slice();
         let mut node_children = self.children;
-        while let Some((id, new_id_path)) = id_path.split_last() {
+        while let Some((ancestor_id, new_id_path)) = id_path.split_last() {
             id_path = new_id_path;
-            node_children = &node_children.iter().find(|child| child.id == *id)?.children;
+            node_children = &node_children
+                .iter()
+                .find(|child| child.id == *ancestor_id)?
+                .children;
         }
 
         let node = node_children.iter().find(|child| child.id == id)?;
@@ -481,11 +490,11 @@ impl<'arena, T> ArenaMutChildren<'arena, T> {
 
         let mut id_path = id_path.as_slice();
         let mut node_children: &'arena mut _ = &mut *self.children;
-        while let Some((id, new_id_path)) = id_path.split_last() {
+        while let Some((ancestor_id, new_id_path)) = id_path.split_last() {
             id_path = new_id_path;
             node_children = &mut node_children
                 .iter_mut()
-                .find(|child| child.id == *id)?
+                .find(|child| child.id == *ancestor_id)?
                 .children;
         }
 
@@ -503,6 +512,10 @@ impl ArenaMapRef<'_> {
     /// If `start_id` is Some, the path ends just before that id instead; `start_id` is not included.
     ///
     /// If there is no path from `start_id` to id, returns an empty vector.
+    #[expect(
+        clippy::missing_panics_doc,
+        reason = "All ids in the tree should have a parent in the parent map"
+    )]
     pub fn get_id_path(self, id: NodeId, start_id: Option<NodeId>) -> Vec<NodeId> {
         let mut path = Vec::new();
 
@@ -511,16 +524,16 @@ impl ArenaMapRef<'_> {
         }
 
         let mut current_id = Some(id);
-        while let Some(id) = current_id {
-            path.push(id);
-            current_id = *self.parents_map.get(&id).unwrap();
+        while let Some(current) = current_id {
+            path.push(current);
+            current_id = *self.parents_map.get(&current).unwrap();
             if current_id == start_id {
                 break;
             }
         }
 
         if current_id != start_id {
-            path.clear()
+            path.clear();
         }
 
         path
