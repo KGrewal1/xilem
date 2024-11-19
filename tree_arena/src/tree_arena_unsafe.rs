@@ -210,10 +210,9 @@ impl<T> DataMap<T> {
         }
 
         let mut current_id = Some(id);
-        #[expect(clippy::shadow_unrelated, reason = "Deliberate Shadow of original id")]
-        while let Some(id) = current_id {
-            path.push(id);
-            current_id = *self.parents.get(&id).unwrap();
+        while let Some(current) = current_id {
+            path.push(current);
+            current_id = *self.parents.get(&current).unwrap();
             if current_id == start_id {
                 break;
             }
