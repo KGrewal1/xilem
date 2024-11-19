@@ -94,6 +94,10 @@ fn mem_swap() {
     let node_2_item = node_2.item;
     *node_1_item = 'c';
     *node_2_item = 'd';
+    #[expect(
+        clippy::drop_non_drop,
+        reason = "Drop glue may be added for future trees, and may differ between safe and unsafe versions"
+    )]
     drop(node_2.children);
     assert_eq!(*node_1_item, 'c', "Node 1 item should be 'c'");
     assert_eq!(*node_2_item, 'd', "Node 2 item should be 'd'");
