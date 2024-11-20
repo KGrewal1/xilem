@@ -11,12 +11,11 @@
 //! will use an arena and unsafe code, but should have the exact same exported API as
 //! this module.
 
-#![expect(missing_debug_implementations, reason = "Deferred: Noisy")]
-
 use super::NodeId;
 
 use std::collections::HashMap;
 
+#[derive(Debug)]
 struct TreeNode<T> {
     id: NodeId,
     item: T,
@@ -32,7 +31,7 @@ struct TreeNode<T> {
 /// will keep track of parent-child relationships, lets you efficiently find
 /// an item anywhere in the tree hierarchy, and give you mutable access to this item
 /// and its children.
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct TreeArena<T> {
     roots: Vec<TreeNode<T>>,
     parents_map: HashMap<NodeId, Option<NodeId>>,
@@ -42,6 +41,7 @@ pub struct TreeArena<T> {
 ///
 /// When you borrow an item from a [`TreeArena`], it returns an `ArenaRef`.
 /// You can iterate over its children to get access to child `ArenaRef` handles.
+#[derive(Debug)]
 pub struct ArenaRef<'arena, T> {
     /// The parent of this node
     pub parent_id: Option<NodeId>,
@@ -63,6 +63,7 @@ pub struct ArenaRef<'arena, T> {
 /// and its children independently without invalidating the references.
 ///
 /// You can iterate over its children to get access to child `ArenaMut` handles.
+#[derive(Debug)]
 pub struct ArenaMut<'arena, T> {
     /// The parent of the node
     pub parent_id: Option<NodeId>,
@@ -75,6 +76,7 @@ pub struct ArenaMut<'arena, T> {
 /// A handle giving shared access to an arena item's children.
 ///
 /// See [`ArenaRef`] for more information.
+#[derive(Debug)]
 pub struct ArenaRefChildren<'arena, T> {
     id: Option<NodeId>,
     children: &'arena Vec<TreeNode<T>>,
@@ -84,6 +86,7 @@ pub struct ArenaRefChildren<'arena, T> {
 /// A handle giving mutable access to an arena item's children.
 ///
 /// See [`ArenaMut`] for more information.
+#[derive(Debug)]
 pub struct ArenaMutChildren<'arena, T> {
     id: Option<NodeId>,
     children: &'arena mut Vec<TreeNode<T>>,
@@ -91,12 +94,13 @@ pub struct ArenaMutChildren<'arena, T> {
 }
 
 /// A shared reference to the parent father map
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct ArenaMapRef<'arena> {
     parents_map: &'arena HashMap<NodeId, Option<NodeId>>,
 }
 
 /// A mutable reference to the parent father map
+#[derive(Debug)]
 pub struct ArenaMapMut<'arena> {
     parents_map: &'arena mut HashMap<NodeId, Option<NodeId>>,
 }

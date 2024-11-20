@@ -1,19 +1,20 @@
 // Copyright 2024 the Xilem Authors
 // SPDX-License-Identifier: Apache-2.0
 
-#![expect(missing_debug_implementations, reason = "Deferred: Noisy")]
 #![allow(unsafe_code, reason = "Purpose is unsafe abstraction")]
 use super::NodeId;
 
 use std::cell::UnsafeCell;
 use std::collections::HashMap;
 
+#[derive(Debug)]
 struct TreeNode<T> {
     item: T,
     children: Vec<NodeId>,
 }
 
 /// Mapping of data for the Tree Arena
+#[derive(Debug)]
 struct DataMap<T> {
     /// The items in the tree
     items: HashMap<NodeId, Box<UnsafeCell<TreeNode<T>>>>,
@@ -29,6 +30,7 @@ struct DataMap<T> {
 /// will keep track of parent-child relationships, lets you efficiently find
 /// an item anywhere in the tree hierarchy, and give you mutable access to this item
 /// and its children.
+#[derive(Debug)]
 pub struct TreeArena<T> {
     /// The items in the tree
     data_map: DataMap<T>,
@@ -38,7 +40,7 @@ pub struct TreeArena<T> {
 ///
 /// When you borrow an item from a [`TreeArena`], it returns an [`ArenaRef`].
 /// You can access it children to get access to child [`ArenaRef`] handles.
-
+#[derive(Debug)]
 pub struct ArenaRef<'arena, T> {
     /// Parent of the Node
     pub parent_id: Option<NodeId>,
@@ -51,6 +53,7 @@ pub struct ArenaRef<'arena, T> {
 /// A handle giving shared access to an arena item's children.
 ///
 /// See [`ArenaRef`] for more information.
+#[derive(Debug)]
 pub struct ArenaRefChildren<'arena, T> {
     /// The associated data arena
     parent_arena: &'arena DataMap<T>,
@@ -74,7 +77,9 @@ impl<T> Clone for ArenaRefChildren<'_, T> {
         *self
     }
 }
+
 impl<Item> Copy for ArenaRefChildren<'_, Item> {}
+
 /// A reference type giving mutable access to an arena item and its children.
 ///
 /// When you borrow an item from a [`TreeArena`], it returns an `ArenaMut`.
@@ -87,6 +92,7 @@ impl<Item> Copy for ArenaRefChildren<'_, Item> {}
 /// and its children independently without invalidating the references.
 ///
 /// You can iterate over its children to get access to child `ArenaMut` handles.
+#[derive(Debug)]
 pub struct ArenaMut<'arena, T> {
     /// Parent of the Node
     pub parent_id: Option<NodeId>,
@@ -104,6 +110,7 @@ pub struct ArenaMut<'arena, T> {
 /// As such if a [`std::mem::swap`] is used to swap the children of two trees,
 /// each tree will still have the correct permissions. This also stores the roots, and so
 /// that will also be in a consistent state
+#[derive(Debug)]
 pub struct ArenaMutChildren<'arena, T> {
     /// The associated data arena
     parent_arena: &'arena mut DataMap<T>,
